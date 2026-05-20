@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>APEX Powersports</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;500;600;700&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --black:#0a0a0a;--dark:#111111;--card:#181818;
+  --border:#2a2a2a;--orange:#f05a1a;--orange-dim:#c04812;
+  --white:#f5f5f0;--muted:#888884;
+  --font-display:'Bebas Neue',sans-serif;
+  --font-cond:'Barlow Condensed',sans-serif;
+  --font-body:'Barlow',sans-serif;
+}
+html{scroll-behavior:smooth}
+body{background:var(--black);color:var(--white);font-family:var(--font-body);min-height:100vh}
+.page{display:none;min-height:100vh;flex-direction:column}
+.page.active{display:flex}
+ 
+/* NAV */
+nav{position:sticky;top:0;z-index:100;background:rgba(10,10,10,.96);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);padding:0 2.5rem;display:flex;align-items:center;justify-content:space-between;height:64px}
+.nav-logo{font-family:var(--font-display);font-size:2rem;letter-spacing:.05em;color:var(--white);cursor:pointer}
+.nav-logo span{color:var(--orange)}
+.nav-links{display:flex;gap:2rem;align-items:center}
+.nav-links a{font-family:var(--font-cond);font-size:.95rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);text-decoration:none;cursor:pointer;transition:color .2s}
+.nav-links a:hover,.nav-links a.active{color:var(--white)}
+.nav-links a.active{color:var(--orange)}
+.nav-cta{background:var(--orange);color:var(--white)!important;padding:.45rem 1.2rem;border-radius:2px}
+.nav-cta:hover{background:var(--orange-dim)!important}
+ 
+/* BUTTONS */
+.btn{display:inline-block;font-family:var(--font-cond);font-size:1rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:.85rem 2rem;border-radius:2px;cursor:pointer;border:none;transition:all .2s;text-decoration:none}
+.btn-primary{background:var(--orange);color:#fff}
+.btn-primary:hover{background:var(--orange-dim);transform:translateY(-1px)}
+.btn-outline{background:transparent;color:var(--white);border:1.5px solid var(--border)}
+.btn-outline:hover{border-color:var(--orange);color:var(--orange)}
+.btn-white{background:#fff;color:var(--orange)}
+.btn-white:hover{background:#f0f0f0;transform:translateY(-1px)}
+.btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border);padding:.5rem 1rem;font-size:.8rem}
+.btn-ghost:hover{color:var(--orange);border-color:var(--orange)}
+ 
+/* HERO */
+.hero{position:relative;min-height:calc(100vh - 64px);display:flex;align-items:center;overflow:hidden;background:var(--dark)}
+.hero-bg{position:absolute;inset:0;background:repeating-linear-gradient(90deg,rgba(240,90,26,.03) 0,rgba(240,90,26,.03) 1px,transparent 1px,transparent 80px),repeating-linear-gradient(0deg,rgba(240,90,26,.03) 0,rgba(240,90,26,.03) 1px,transparent 1px,transparent 80px)}
+.hero-accent{position:absolute;right:0;top:0;bottom:0;width:55%;background:linear-gradient(135deg,transparent 20%,rgba(240,90,26,.05) 100%);border-left:1px solid rgba(240,90,26,.12);clip-path:polygon(8% 0,100% 0,100% 100%,0% 100%)}
+.hero-content{position:relative;z-index:2;padding:4rem 2.5rem;max-width:700px}
+.hero-eyebrow{font-family:var(--font-cond);font-size:.85rem;font-weight:600;letter-spacing:.3em;text-transform:uppercase;color:var(--orange);margin-bottom:1.2rem;display:flex;align-items:center;gap:.75rem}
+.hero-eyebrow::before{content:'';display:block;width:2.5rem;height:2px;background:var(--orange)}
+.hero-title{font-family:var(--font-display);font-size:clamp(5rem,10vw,9rem);line-height:.92;letter-spacing:.02em;margin-bottom:1.5rem}
+.hero-title span{color:var(--orange)}
+.hero-subtitle{font-size:1.1rem;color:var(--muted);max-width:480px;margin-bottom:2.5rem;line-height:1.7}
+.hero-actions{display:flex;gap:1rem;flex-wrap:wrap}
+.hero-stats{position:absolute;bottom:3rem;right:2.5rem;display:flex;gap:3rem;z-index:2}
+.stat-item{text-align:right}
+.stat-num{font-family:var(--font-display);font-size:2.8rem;color:var(--white);line-height:1}
+.stat-num span{color:var(--orange)}
+.stat-label{font-family:var(--font-cond);font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted)}
+ 
+/* SECTIONS */
+section{padding:5rem 2.5rem}
+.section-label{font-family:var(--font-cond);font-size:.78rem;font-weight:600;letter-spacing:.3em;text-transform:uppercase;color:var(--orange);margin-bottom:.75rem;display:flex;align-items:center;gap:.6rem}
+.section-label::before{content:'';width:1.5rem;height:2px;background:var(--orange)}
+.section-title{font-family:var(--font-display);font-size:clamp(2.5rem,5vw,4rem);line-height:1;margin-bottom:1rem}
+ 
+/* CATEGORIES */
+.categories-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);margin-top:3rem}
+.category-card{background:var(--dark);padding:2.5rem 2rem;cursor:pointer;transition:background .2s;position:relative;overflow:hidden}
+.category-card:hover{background:var(--card)}
+.category-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:var(--orange);transform:scaleX(0);transform-origin:left;transition:transform .3s}
+.category-card:hover::after{transform:scaleX(1)}
+.cat-img{width:100%;height:120px;object-fit:cover;border-radius:2px;margin-bottom:1rem}
+.cat-name{font-family:var(--font-cond);font-size:1.4rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin-bottom:.4rem}
+.cat-count{font-size:.85rem;color:var(--muted)}
+ 
+/* PRODUCT CARDS */
+.products-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;margin-top:3rem}
+.product-card{background:var(--card);border:1px solid var(--border);border-radius:4px;overflow:hidden;cursor:pointer;transition:border-color .2s,transform .2s}
+.product-card:hover{border-color:var(--orange);transform:translateY(-3px)}
+.product-img{width:100%;aspect-ratio:16/9;overflow:hidden;background:#0d0d0d;position:relative}
+.product-img img{width:100%;height:100%;object-fit:cover;transition:transform .4s}
+.product-card:hover .product-img img{transform:scale(1.05)}
+.product-body{padding:1.25rem 1.5rem 1.5rem}
+.product-badge{display:inline-block;font-family:var(--font-cond);font-size:.72rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;padding:.2rem .6rem;border-radius:2px;margin-bottom:.7rem}
+.badge-new{background:var(--orange);color:#fff}
+.badge-sale{background:#1a3a1a;color:#4ade80}
+.badge-hot{background:#3a1a1a;color:#f87171}
+.product-name{font-family:var(--font-cond);font-size:1.3rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin-bottom:.25rem}
+.product-sub{font-size:.82rem;color:var(--muted);margin-bottom:.6rem}
+.product-specs-row{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem}
+.spec-pill{font-family:var(--font-cond);font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:.2rem .55rem;background:var(--dark);border:1px solid var(--border);border-radius:2px;color:var(--muted)}
+.product-footer{display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--border);padding-top:1rem;margin-top:1rem}
+.product-price{font-family:var(--font-display);font-size:1.6rem;color:var(--orange)}
+.product-price-orig{font-size:.9rem;color:var(--muted);text-decoration:line-through;margin-left:.4rem}
+.view-btn{font-family:var(--font-cond);font-size:.8rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--orange);background:none;border:none;cursor:pointer;transition:letter-spacing .2s}
+.view-btn:hover{letter-spacing:.2em}
+ 
+/* PROMO BANNER */
+.promo-banner{background:var(--orange);padding:3rem 2.5rem;display:flex;align-items:center;justify-content:space-between;gap:2rem;flex-wrap:wrap}
+.promo-text h2{font-family:var(--font-display);font-size:2.5rem;color:#fff;line-height:1}
+.promo-text p{color:rgba(255,255,255,.75);margin-top:.4rem}
+ 
+footer{margin-top:auto;border-top:1px solid var(--border);padding:2rem 2.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+.footer-logo{font-family:var(--font-display);font-size:1.5rem;color:var(--muted)}
+.footer-logo span{color:var(--orange)}
+.footer-copy{font-size:.82rem;color:var(--muted)}
+ 
+/* ── PRODUCTS PAGE ── */
+.page-header{padding:3rem 2.5rem 1.5rem;border-bottom:1px solid var(--border);background:var(--dark)}
+.breadcrumb{font-family:var(--font-cond);font-size:.82rem;letter-spacing:.1em;color:var(--muted);margin-bottom:1rem;display:flex;gap:.5rem;align-items:center}
+.breadcrumb a{color:var(--muted);text-decoration:none;cursor:pointer}
+.breadcrumb a:hover{color:var(--orange)}
+.page-title{font-family:var(--font-display);font-size:clamp(3rem,6vw,5rem);line-height:1}
+.page-meta{font-size:.9rem;color:var(--muted);margin-top:.4rem}
+ 
+/* SEARCH BAR */
+.search-bar-wrap{margin-top:1.5rem;position:relative}
+.search-icon{position:absolute;left:1rem;top:50%;transform:translateY(-50%);color:var(--muted);font-size:1.1rem;pointer-events:none}
+#search-input{
+  width:100%;
+  background:var(--card);
+  border:1.5px solid var(--border);
+  border-radius:4px;
+  color:var(--white);
+  font-family:var(--font-body);
+  font-size:1rem;
+  padding:.85rem 3rem .85rem 2.8rem;
+  transition:border-color .2s;
+  outline:none;
+}
+#search-input::placeholder{color:var(--muted)}
+#search-input:focus{border-color:var(--orange)}
+.search-clear{position:absolute;right:1rem;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer;display:none;line-height:1}
+.search-clear:hover{color:var(--white)}
+ 
+/* PRODUCTS LAYOUT */
+.products-layout{display:grid;grid-template-columns:280px 1fr;flex:1}
+.sidebar{border-right:1px solid var(--border);padding:2rem 1.5rem;background:var(--dark);overflow-y:auto}
+.filter-group{margin-bottom:1.75rem}
+.filter-title{font-family:var(--font-cond);font-size:.75rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-bottom:.75rem;padding-bottom:.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.filter-clear{font-size:.68rem;cursor:pointer;color:var(--orange);letter-spacing:.1em}
+.filter-clear:hover{text-decoration:underline}
+ 
+/* Checkboxes */
+.filter-check{display:flex;align-items:center;gap:.6rem;padding:.35rem 0;cursor:pointer;color:var(--muted);font-size:.88rem;transition:color .2s;user-select:none}
+.filter-check:hover{color:var(--white)}
+.filter-check input[type=checkbox]{appearance:none;-webkit-appearance:none;width:15px;height:15px;border:1.5px solid var(--border);border-radius:2px;background:var(--card);cursor:pointer;flex-shrink:0;position:relative;transition:all .15s}
+.filter-check input[type=checkbox]:checked{background:var(--orange);border-color:var(--orange)}
+.filter-check input[type=checkbox]:checked::after{content:'✓';position:absolute;top:-1px;left:2px;color:#fff;font-size:.7rem;font-weight:700}
+.filter-check span.fc-count{margin-left:auto;font-size:.72rem;background:rgba(255,255,255,.06);padding:.1rem .4rem;border-radius:2px;color:var(--muted)}
+ 
+/* Range slider */
+.range-wrap{margin-top:.5rem}
+.range-labels{display:flex;justify-content:space-between;font-size:.78rem;color:var(--muted);margin-bottom:.5rem;font-family:var(--font-cond);letter-spacing:.05em}
+input[type=range]{
+  width:100%;appearance:none;-webkit-appearance:none;
+  height:3px;background:var(--border);border-radius:2px;outline:none;cursor:pointer;
+}
+input[type=range]::-webkit-slider-thumb{appearance:none;width:16px;height:16px;background:var(--orange);border-radius:50%;cursor:pointer;border:2px solid var(--dark)}
+input[type=range]::-moz-range-thumb{width:16px;height:16px;background:var(--orange);border-radius:50%;cursor:pointer;border:2px solid var(--dark)}
+ 
+/* Select dropdowns */
+.filter-select{width:100%;background:var(--card);border:1px solid var(--border);color:var(--white);padding:.5rem .75rem;border-radius:3px;font-family:var(--font-body);font-size:.88rem;cursor:pointer;outline:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888884' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .75rem center;padding-right:2rem;margin-top:.4rem}
+.filter-select:focus{border-color:var(--orange)}
+ 
+/* Year inputs */
+.year-inputs{display:flex;gap:.5rem;margin-top:.5rem}
+.year-input{flex:1;background:var(--card);border:1px solid var(--border);color:var(--white);padding:.45rem .6rem;border-radius:3px;font-family:var(--font-body);font-size:.85rem;outline:none;text-align:center}
+.year-input:focus{border-color:var(--orange)}
+ 
+.apply-btn{width:100%;text-align:center;margin-top:1.25rem;padding:.7rem 1rem;font-size:.88rem}
+.reset-btn{width:100%;text-align:center;margin-top:.5rem;padding:.55rem 1rem;font-size:.8rem;background:transparent;border:1px solid var(--border);color:var(--muted);font-family:var(--font-cond);font-weight:700;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;border-radius:2px;transition:all .2s}
+.reset-btn:hover{color:var(--orange);border-color:var(--orange)}
+ 
+/* MAIN CONTENT */
+.products-main{padding:1.75rem 1.75rem}
+.toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:1rem}
+.toolbar-left{font-size:.88rem;color:var(--muted)}
+.toolbar-left strong{color:var(--white)}
+.sort-select{background:var(--card);border:1px solid var(--border);color:var(--white);padding:.4rem .8rem;border-radius:2px;font-family:var(--font-body);font-size:.85rem;cursor:pointer;outline:none}
+.sort-select:focus{border-color:var(--orange)}
+ 
+/* Active filters chips */
+.active-chips{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1rem;min-height:0}
+.chip{font-family:var(--font-cond);font-size:.72rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:.25rem .65rem;background:rgba(240,90,26,.12);border:1px solid rgba(240,90,26,.3);border-radius:2px;color:var(--orange);display:flex;align-items:center;gap:.4rem}
+.chip-x{cursor:pointer;font-size:.85rem;line-height:1;color:var(--orange);opacity:.7}
+.chip-x:hover{opacity:1}
+ 
+.products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1.25rem}
+.no-results{padding:4rem 2rem;text-align:center;color:var(--muted)}
+.no-results h3{font-family:var(--font-display);font-size:2rem;margin-bottom:.5rem;color:var(--white)}
+ 
+/* ── DETAIL PAGE ── */
+.product-detail-layout{display:grid;grid-template-columns:1fr 480px;flex:1}
+.detail-gallery{background:var(--dark);padding:3rem;border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center}
+.main-img-display{width:100%;max-width:500px;aspect-ratio:4/3;object-fit:cover;border-radius:4px;margin-bottom:1.5rem}
+.thumb-row{display:flex;gap:.75rem}
+.thumb{width:80px;height:60px;border:1px solid var(--border);border-radius:4px;overflow:hidden;cursor:pointer;transition:border-color .2s}
+.thumb img{width:100%;height:100%;object-fit:cover}
+.thumb:hover,.thumb.active-thumb{border-color:var(--orange)}
+.detail-info{padding:3rem 2.5rem;overflow-y:auto}
+.detail-brand{font-family:var(--font-cond);font-size:.82rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--orange);margin-bottom:.5rem}
+.detail-title{font-family:var(--font-display);font-size:clamp(2rem,4vw,3.2rem);line-height:1;margin-bottom:.5rem}
+.detail-model{font-size:.9rem;color:var(--muted);margin-bottom:1.5rem}
+.star-row{display:flex;align-items:center;gap:.5rem;margin-bottom:1.5rem}
+.stars{color:var(--orange);font-size:1rem;letter-spacing:.1em}
+.star-count{font-size:.85rem;color:var(--muted)}
+.detail-price-row{display:flex;align-items:baseline;gap:1rem;margin-bottom:1.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)}
+.detail-price{font-family:var(--font-display);font-size:3rem;color:var(--orange);line-height:1}
+.detail-price-orig{font-family:var(--font-display);font-size:1.8rem;color:var(--muted);text-decoration:line-through}
+.detail-save{font-family:var(--font-cond);font-size:.82rem;font-weight:700;background:#1a3a1a;color:#4ade80;padding:.2rem .5rem;border-radius:2px;letter-spacing:.1em}
+.specs-grid{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--border);border-radius:4px;overflow:hidden;margin-bottom:1.5rem}
+.spec-item{padding:.75rem 1rem;border-bottom:1px solid var(--border);border-right:1px solid var(--border)}
+.spec-item:nth-child(even){border-right:none}
+.spec-item:nth-last-child(-n+2){border-bottom:none}
+.spec-label{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+.spec-value{font-family:var(--font-cond);font-size:1rem;font-weight:600;margin-top:.15rem}
+.color-options{margin-bottom:1.5rem}
+.color-label{font-size:.82rem;color:var(--muted);margin-bottom:.6rem;text-transform:uppercase;letter-spacing:.1em;font-family:var(--font-cond);font-weight:600}
+.color-swatches{display:flex;gap:.6rem}
+.swatch{width:32px;height:32px;border-radius:50%;border:2px solid transparent;cursor:pointer;transition:transform .2s}
+.swatch:hover,.swatch.active-swatch{border-color:var(--white);transform:scale(1.1)}
+.cta-group{display:flex;gap:.75rem;flex-wrap:wrap;margin-bottom:1.5rem}
+.cta-main{flex:1;min-width:160px}
+.feature-list{border-top:1px solid var(--border);padding-top:1.25rem}
+.feature-item{display:flex;align-items:flex-start;gap:.6rem;padding:.4rem 0;font-size:.9rem;color:var(--muted)}
+.feature-dot{width:6px;height:6px;border-radius:50%;background:var(--orange);margin-top:.55rem;flex-shrink:0}
+ 
+@media(max-width:900px){
+  .products-layout{grid-template-columns:1fr}
+  .sidebar{border-right:none;border-bottom:1px solid var(--border)}
+  .product-detail-layout{grid-template-columns:1fr}
+  .hero-stats{display:none}
+}
+</style>
+</head>
+<body>
+ 
+<!-- ═══════════════ HOME PAGE ═══════════════ -->
+<div class="page active" id="page-home">
+  <nav>
+    <div class="nav-logo" onclick="showPage('home')">APEX<span>●</span></div>
+    <div class="nav-links">
+      <a onclick="showPage('home')" class="active">Home</a>
+      <a onclick="showPage('products')">Products</a>
+      <a>Service</a>
+      <a>Financing</a>
+      <a onclick="showPage('products')" class="nav-cta">Shop Now</a>
+    </div>
+  </nav>
+ 
+  <div class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-accent"></div>
+    <div class="hero-content">
+      <div class="hero-eyebrow">2025 Collection</div>
+      <h1 class="hero-title">BUILT TO<br><span>DOMINATE</span></h1>
+      <p class="hero-subtitle">From the dunes to the track — discover elite powersports machines engineered for those who refuse to settle.</p>
+      <div class="hero-actions">
+        <button class="btn btn-primary" onclick="showPage('products')">Shop All Machines</button>
+        <button class="btn btn-outline">Book a Test Ride</button>
+      </div>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item"><div class="stat-num">320<span>+</span></div><div class="stat-label">Models In Stock</div></div>
+      <div class="stat-item"><div class="stat-num">12<span>K</span></div><div class="stat-label">Happy Riders</div></div>
+      <div class="stat-item"><div class="stat-num">24</div><div class="stat-label">Years Experience</div></div>
+    </div>
+  </div>
+ 
+  <section style="background:var(--dark);padding-top:4rem">
+    <div class="section-label">Browse Categories</div>
+    <h2 class="section-title">Find Your Ride</h2>
+    <p style="color:var(--muted);max-width:520px">From trail-shredding dirt bikes to luxury side-by-sides — every category, every brand, under one roof.</p>
+    <div class="categories-grid">
+      <div class="category-card" onclick="showPage('products')">
+        <img class="cat-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Kwasaki_ZX-10R_tokyo.JPG/640px-Kwasaki_ZX-10R_tokyo.JPG" alt="Motorcycles" onerror="this.style.display='none'">
+        <div class="cat-name">Motorcycles</div><div class="cat-count">84 models available</div>
+      </div>
+      <div class="category-card" onclick="showPage('products')">
+        <img class="cat-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/2019_Can-Am_Maverick_X3_X_rs_Turbo_RR.jpg/640px-2019_Can-Am_Maverick_X3_X_rs_Turbo_RR.jpg" alt="Side-by-Sides" onerror="this.style.display='none'">
+        <div class="cat-name">Side-by-Sides</div><div class="cat-count">62 models available</div>
+      </div>
+      <div class="category-card" onclick="showPage('products')">
+        <img class="cat-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Sea-Doo_RXP-X_260_2012.jpg/640px-Sea-Doo_RXP-X_260_2012.jpg" alt="Jet Skis" onerror="this.style.display='none'">
+        <div class="cat-name">Jet Skis</div><div class="cat-count">38 models available</div>
+      </div>
+      <div class="category-card" onclick="showPage('products')">
+        <img class="cat-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/CanAm_ATV.jpg/640px-CanAm_ATV.jpg" alt="ATVs" onerror="this.style.display='none'">
+        <div class="cat-name">ATVs</div><div class="cat-count">57 models available</div>
+      </div>
+      <div class="category-card" onclick="showPage('products')">
+        <img class="cat-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/KTM_350_EXC-F.jpg/640px-KTM_350_EXC-F.jpg" alt="Dirt Bikes" onerror="this.style.display='none'">
+        <div class="cat-name">Dirt Bikes</div><div class="cat-count">45 models available</div>
+      </div>
+    </div>
+  </section>
+ 
+  <section style="background:var(--black)">
+    <div class="section-label">Hot Picks</div>
+    <h2 class="section-title">Featured Machines</h2>
+    <div class="products-strip">
+      <div class="product-card" onclick="showPage('detail')">
+        <div class="product-img"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Kwasaki_ZX-10R_tokyo.JPG/640px-Kwasaki_ZX-10R_tokyo.JPG" alt="Kawasaki Ninja ZX-10R"></div>
+        <div class="product-body">
+          <span class="product-badge badge-new">New 2025</span>
+          <div class="product-name">Kawasaki Ninja ZX-10R</div>
+          <div class="product-sub">998cc · Superbike · Track Ready</div>
+          <div class="product-footer"><div><span class="product-price">$16,999</span></div><button class="view-btn" onclick="event.stopPropagation();showPage('detail')">View →</button></div>
+        </div>
+      </div>
+      <div class="product-card" onclick="showPage('detail')">
+        <div class="product-img"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/2019_Can-Am_Maverick_X3_X_rs_Turbo_RR.jpg/640px-2019_Can-Am_Maverick_X3_X_rs_Turbo_RR.jpg" alt="Can-Am Maverick X3"></div>
+        <div class="product-body">
+          <span class="product-badge badge-sale">Save $3,000</span>
+          <div class="product-name">Can-Am Maverick X3</div>
+          <div class="product-sub">195HP · Side-by-Side · Turbo RR</div>
+          <div class="product-footer"><div><span class="product-price">$29,999</span><span class="product-price-orig">$32,999</span></div><button class="view-btn" onclick="event.stopPropagation();showPage('detail')">View →</button></div>
+        </div>
+      </div>
+      <div class="product-card" onclick="showPage('detail')">
+        <div class="product-img"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Sea-Doo_RXP-X_260_2012.jpg/640px-Sea-Doo_RXP-X_260_2012.jpg" alt="Sea-Doo RXT-X 300"></div>
+        <div class="product-body">
+          <span class="product-badge badge-hot">Best Seller</span>
+          <div class="product-name">Sea-Doo RXT-X 300</div>
+          <div class="product-sub">300HP · Jet Ski · Race Performance</div>
+          <div class="product-footer"><div><span class="product-price">$18,499</span></div><button class="view-btn" onclick="event.stopPropagation();showPage('detail')">View →</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+ 
+  <div class="promo-banner">
+    <div class="promo-text"><h2>0% Financing Available</h2><p>Ride now, pay later. Get approved in minutes with our in-house financing team.</p></div>
+    <button class="btn btn-white">Apply Today</button>
+  </div>
+ 
+  <footer>
+    <div class="footer-logo">APEX<span>●</span></div>
+    <div class="footer-copy">© 2025 APEX Powersports · Las Vegas, NV · All Rights Reserved</div>
+  </footer>
+</div>
+ 
+ 
+<!-- ═══════════════ PRODUCTS PAGE ═══════════════ -->
+<div class="page" id="page-products">
+  <nav>
+    <div class="nav-logo" onclick="showPage('home')">APEX<span style="color:var(--orange)">●</span></div>
+    <div class="nav-links">
+      <a onclick="showPage('home')">Home</a>
+      <a onclick="showPage('products')" class="active">Products</a>
+      <a>Service</a>
+      <a>Financing</a>
+      <a onclick="showPage('products')" class="nav-cta">Shop Now</a>
+    </div>
+  </nav>
+ 
+  <div class="page-header">
+    <div class="breadcrumb"><a onclick="showPage('home')">Home</a><span>/</span><span style="color:var(--white)">All Machines</span></div>
+    <h1 class="page-title">All Machines</h1>
+    <div class="page-meta" id="results-count">12 products available</div>
+    <div class="search-bar-wrap">
+      <span class="search-icon">🔍</span>
+      <input id="search-input" type="text" placeholder="Search by make, model, year, or keyword…" oninput="handleSearch(this.value)">
+      <button class="search-clear" id="search-clear" onclick="clearSearch()">✕</button>
+    </div>
+  </div>
+ 
+  <div class="products-layout">
+    <!-- SIDEBAR FILTERS -->
+    <aside class="sidebar">
+ 
+      <div class="filter-group">
+        <div class="filter-title">Make <span class="filter-clear" onclick="clearGroup('make')">Clear</span></div>
+        <label class="filter-check"><input type="checkbox" value="Kawasaki" onchange="applyFilters()"><span>Kawasaki</span><span class="fc-count">2</span></label>
+        <label class="filter-check"><input type="checkbox" value="Can-Am" onchange="applyFilters()"><span>Can-Am</span><span class="fc-count">3</span></label>
+        <label class="filter-check"><input type="checkbox" value="Sea-Doo" onchange="applyFilters()"><span>Sea-Doo</span><span class="fc-count">2</span></label>
+        <label class="filter-check"><input type="checkbox" value="Honda" onchange="applyFilters()"><span>Honda</span><span class="fc-count">1</span></label>
+        <label class="filter-check"><input type="checkbox" value="Yamaha" onchange="applyFilters()"><span>Yamaha</span><span class="fc-count">2</span></label>
+        <label class="filter-check"><input type="checkbox" value="Polaris" onchange="applyFilters()"><span>Polaris</span><span class="fc-count">1</span></label>
+        <label class="filter-check"><input type="checkbox" value="KTM" onchange="applyFilters()"><span>KTM</span><span class="fc-count">1</span></label>
+      </div>
+ 
+      <div class="filter-group">
+        <div class="filter-title">Category <span class="filter-clear" onclick="clearGroup('category')">Clear</span></div>
+        <label class="filter-check"><input type="checkbox" value="Motorcycle" onchange="applyFilters()"><span>Motorcycles</span><span class="fc-count">4</span></label>
+        <label class="filter-check"><input type="checkbox" value="Side-by-Side" onchange="applyFilters()"><span>Side-by-Sides</span><span class="fc-count">3</span></label>
+        <label class="filter-check"><input type="checkbox" value="Jet Ski" onchange="applyFilters()"><span>Jet Skis</span><span class="fc-count">2</span></label>
+        <label class="filter-check"><input type="checkbox" value="ATV" onchange="applyFilters()"><span>ATVs</span><span class="fc-count">2</span></label>
+        <label class="filter-check"><input type="checkbox" value="Dirt Bike" onchange="applyFilters()"><span>Dirt Bikes</span><span class="fc-count">1</span></label>
+      </div>
+ 
+      <div class="filter-group">
+        <div class="filter-title">Model Year <span class="filter-clear" onclick="clearYears()">Clear</span></div>
+        <div class="year-inputs">
+          <input class="year-input" id="year-min" type="number" placeholder="From" min="2018" max="2025" value="" oninput="applyFilters()">
+          <span style="color:var(--muted);align-self:center">–</span>
+          <input class="year-input" id="year-max" type="number" placeholder="To" min="2018" max="2025" value="" oninput="applyFilters()">
+        </div>
+      </div>
+ 
+      <div class="filter-group">
+        <div class="filter-title">Price Range <span class="filter-clear" onclick="resetPrice()">Clear</span></div>
+        <div class="range-labels">
+          <span id="price-min-label">$0</span>
+          <span id="price-max-label">$40,000+</span>
+        </div>
+        <input type="range" id="price-min-slider" min="0" max="40000" step="500" value="0" oninput="updatePriceMin(this.value)">
+        <div style="margin-top:.6rem">
+          <input type="range" id="price-max-slider" min="0" max="40000" step="500" value="40000" oninput="updatePriceMax(this.value)">
+        </div>
+      </div>
+ 
+      <div class="filter-group">
+        <div class="filter-title">Condition</div>
+        <label class="filter-check"><input type="checkbox" value="New" onchange="applyFilters()" checked><span>New</span><span class="fc-count">9</span></label>
+        <label class="filter-check"><input type="checkbox" value="Pre-Owned" onchange="applyFilters()"><span>Pre-Owned</span><span class="fc-count">3</span></label>
+      </div>
+ 
+      <button class="btn btn-primary apply-btn" onclick="applyFilters()">Apply Filters</button>
+      <button class="reset-btn" onclick="resetAll()">Reset All Filters</button>
+    </aside>
+ 
+    <!-- MAIN GRID -->
+    <div class="products-main">
+      <div class="toolbar">
+        <div class="toolbar-left">Showing <strong id="count-display">12</strong> results</div>
+        <select class="sort-select" id="sort-select" onchange="applyFilters()">
+          <option value="featured">Sort: Featured</option>
+          <option value="price-asc">Price: Low to High</option>
+          <option value="price-desc">Price: High to Low</option>
+          <option value="year-desc">Newest First</option>
+          <option value="year-asc">Oldest First</option>
+        </select>
+      </div>
+      <div class="active-chips" id="active-chips"></div>
+      <div class="products-grid" id="products-grid"></div>
+    </div>
+  </div>
+ 
+  <footer style="margin-top:0">
+    <div class="footer-logo">APEX<span>●</span></div>
+    <div class="footer-copy">© 2025 APEX Powersports · Las Vegas, NV</div>
+  </footer>
+</div>
+ 
+ 
+<!-- ═══════════════ PRODUCT DETAIL PAGE ═══════════════ -->
+<div class="page" id="page-detail">
+  <nav>
+    <div class="nav-logo" onclick="showPage('home')">APEX<span style="color:var(--orange)">●</span></div>
+    <div class="nav-links">
+      <a onclick="showPage('home')">Home</a>
+      <a onclick="showPage('products')">Products</a>
+      <a>Service</a>
+      <a>Financing</a>
+      <a onclick="showPage('products')" class="nav-cta">Shop Now</a>
+    </div>
+  </nav>
+  <div class="page-header" style="padding-bottom:2rem">
+    <div class="breadcrumb">
+      <a onclick="showPage('home')">Home</a><span>/</span>
+      <a onclick="showPage('products')">Motorcycles</a><span>/</span>
+      <span style="color:var(--white)">Kawasaki Ninja ZX-10R</span>
+    </div>
+  </div>
+  <div class="product-detail-layout">
+    <div class="detail-gallery">
+      <img id="main-img" class="main-img-display" src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Kwasaki_ZX-10R_tokyo.JPG/800px-Kwasaki_ZX-10R_tokyo.JPG" alt="Kawasaki Ninja ZX-10R">
+      <div class="thumb-row">
+        <div class="thumb active-thumb" onclick="setImg('https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Kwasaki_ZX-10R_tokyo.JPG/800px-Kwasaki_ZX-10R_tokyo.JPG',this)">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Kwasaki_ZX-10R_tokyo.JPG/200px-Kwasaki_ZX-10R_tokyo.JPG" alt="View 1">
+        </div>
+        <div class="thumb" onclick="setImg('https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/2007KawasakiNinjaZX10R-001.jpg/800px-2007KawasakiNinjaZX10R-001.jpg',this)">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/2007KawasakiNinjaZX10R-001.jpg/200px-2007KawasakiNinjaZX10R-001.jpg" alt="View 2">
+        </div>
+        <div class="thumb" onclick="setImg('https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Kawasaki_Ninja_ZX-10R_2006.jpg/800px-Kawasaki_Ninja_ZX-10R_2006.jpg',this)">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Kawasaki_Ninja_ZX-10R_2006.jpg/200px-Kawasaki_Ninja_ZX-10R_2006.jpg" alt="View 3">
+        </div>
+      </div>
+    </div>
+    <div class="detail-info">
+      <div class="detail-brand">Kawasaki · 2025</div>
+      <h1 class="detail-title">Ninja ZX-10R</h1>
+      <div class="detail-model">SKU: KAW-ZX10R-2025 · Motorcycle · In Stock</div>
+      <div class="star-row"><div class="stars">★★★★★</div><div class="star-count">4.9 (127 reviews)</div></div>
+      <div class="detail-price-row">
+        <div class="detail-price">$16,999</div>
+        <div class="detail-price-orig">$18,499</div>
+        <div class="detail-save">SAVE $1,500</div>
+      </div>
+      <div class="specs-grid">
+        <div class="spec-item"><div class="spec-label">Make</div><div class="spec-value">Kawasaki</div></div>
+        <div class="spec-item"><div class="spec-label">Model</div><div class="spec-value">Ninja ZX-10R</div></div>
+        <div class="spec-item"><div class="spec-label">Year</div><div class="spec-value">2025</div></div>
+        <div class="spec-item"><div class="spec-label">Category</div><div class="spec-value">Superbike</div></div>
+        <div class="spec-item"><div class="spec-label">Engine</div><div class="spec-value">998cc Inline-4</div></div>
+        <div class="spec-item"><div class="spec-label">Horsepower</div><div class="spec-value">203 HP</div></div>
+        <div class="spec-item"><div class="spec-label">Top Speed</div><div class="spec-value">186 mph</div></div>
+        <div class="spec-item"><div class="spec-label">Weight</div><div class="spec-value">441 lbs</div></div>
+        <div class="spec-item"><div class="spec-label">Seat Height</div><div class="spec-value">32.7 in</div></div>
+        <div class="spec-item"><div class="spec-label">Fuel Tank</div><div class="spec-value">4.5 gal</div></div>
+      </div>
+      <div class="color-options">
+        <div class="color-label">Color — <span style="color:var(--white)" id="color-name">Lime Green</span></div>
+        <div class="color-swatches">
+          <div class="swatch active-swatch" style="background:#84cc16" data-name="Lime Green"></div>
+          <div class="swatch" style="background:#dc2626" data-name="Candy Red"></div>
+          <div class="swatch" style="background:#1e3a8a" data-name="Pearl Blue"></div>
+          <div class="swatch" style="background:#1a1a1a;border-color:#444" data-name="Flat Black"></div>
+        </div>
+      </div>
+      <div class="cta-group">
+        <button class="btn btn-primary cta-main">Add to Cart</button>
+        <button class="btn btn-outline">Book Test Ride</button>
+      </div>
+      <div style="font-size:.82rem;color:var(--muted);margin-bottom:1.5rem">
+        💳 &nbsp;As low as <strong style="color:var(--white)">$289/mo</strong> with 0% APR financing · <span style="color:var(--orange);cursor:pointer">Get pre-approved →</span>
+      </div>
+      <div class="feature-list">
+        <div style="font-family:var(--font-cond);font-size:.78rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:.75rem">Highlights</div>
+        <div class="feature-item"><div class="feature-dot"></div>Showa Balance Free Fork (BFF) fully adjustable suspension</div>
+        <div class="feature-item"><div class="feature-dot"></div>Brembo M50 monobloc front brake calipers with steel-braided lines</div>
+        <div class="feature-item"><div class="feature-dot"></div>Kawasaki Cornering Management Function (KCMF) with 6-axis IMU</div>
+        <div class="feature-item"><div class="feature-dot"></div>Lean-angle-sensitive traction control and launch control</div>
+        <div class="feature-item"><div class="feature-dot"></div>4.3" Full-Color TFT with smartphone connectivity via Rideology</div>
+      </div>
+    </div>
+  </div>
+  <footer style="margin-top:0">
+    <div class="footer-logo">APEX<span>●</span></div>
+    <div class="footer-copy">© 2025 APEX Powersports · Las Vegas, NV</div>
+  </footer>
+</div>
+ 
+<script>
+// ── PRODUCT DATA ──
+const allProducts = [
+  {
+    img:'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Kwasaki_ZX-10R_tokyo.JPG/640px-Kwasaki_ZX-10R_tokyo.JPG',
+    badge:'badge-new', badgeText:'New 2025',
+    make:'Kawasaki', model:'Ninja ZX-10R', year:2025,
+    category:'Motorcycle', condition:'New',
+    name:'Kawasaki Ninja ZX-10R',
+    sub:'Superbike · 998cc Inline-4',
+    engine:'998cc Inline-4', hp:'203 HP', topSpeed:'186 mph',
+    price:16999, priceDisplay:'$16,999', orig:null
+  },
+  {
+    img:'https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/2019_Can-Am_Maverick_X3_X_rs_Turbo_RR.jpg/640px-2019_Can-Am_Maverick_X3_X_rs_Turbo_RR.jpg',
+    badge:'badge-sale', badgeText:'Save $3,000',
+    make:'Can-Am', model:'Maverick X3 Turbo RR', year:2024,
+    category:'Side-by-Side', condition:'New',
+    name:'Can-Am Maverick X3',
+    sub:'Side-by-Side · 195 HP Turbo',
+    engine:'900cc Turbo', hp:'195 HP', topSpeed:'72 mph',
+    price:29999, priceDisplay:'$29,999', orig:'$32,999'
+  },
+  {
+    img:'https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Sea-Doo_RXP-X_260_2012.jpg/640px-Sea-Doo_RXP-X_260_2012.jpg',
+    badge:'badge-hot', badgeText:'Best Seller',
+    make:'Sea-Doo', model:'RXT-X 300', year:2025,
+    category:'Jet Ski', condition:'New',
+    name:'Sea-Doo RXT-X 300',
+    sub:'Jet Ski · 300 HP Supercharged',
+    engine:'1630cc Supercharged', hp:'300 HP', topSpeed:'67 mph',
+    price:18499, priceDisplay:'$18,499', orig:null
+  },
+  {
+    img:'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/CanAm_ATV.jpg/640px-CanAm_ATV.jpg',
+    badge:'badge-new', badgeText:'New 2025',
+    make:'Can-Am', model:'Outlander 1000R', year:2025,
+    category:'ATV', condition:'New',
+    name:'Can-Am Outlander 1000R',
+    sub:'ATV · 89 HP V-Twin',
+    engine:'976cc V-Twin', hp:'89 HP', topSpeed:'60 mph',
+    price:14299, priceDisplay:'$14,299', orig:null
+  },
+  {
+    img:'https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/KTM_350_EXC-F.jpg/640px-KTM_350_EXC-F.jpg',
+    badge:'', badgeText:'',
+    make:'KTM', model:'450 SX-F', year:2024,
+    category:'Dirt Bike', condition:'New',
+    name:'KTM 450 SX-F',
+    sub:'Dirt Bike · 450cc Motocross',
+    engine:'449cc Single', hp:'63 HP', topSpeed:'80 mph',
+    price:10799, priceDisplay:'$10,799', orig:null
+  },
+  {
+    img:'https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/2007KawasakiNinjaZX10R-001.jpg/640px-2007KawasakiNinjaZX10R-001.jpg',
+    badge:'badge-sale', badgeText:'Save $2,500',
+    make:'Honda', model:'CBR1000RR-R Fireblade SP', year:2024,
+    category:'Motorcycle', condition:'New',
+    name:'Honda CBR1000RR-R',
+    sub:'Superbike · 1000cc Inline-4',
+    engine:'999cc Inline-4', hp:'214 HP', topSpeed:'188 mph',
+    price:28999, priceDisplay:'$28,999', orig:'$31,499'
+  },
+  {
+    img:'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Yamaha_YXZ1000R_2016.jpg/640px-Yamaha_YXZ1000R_2016.jpg',
+    badge:'badge-hot', badgeText:'Top Rated',
+    make:'Yamaha', model:'YXZ1000R SS', year:2024,
+    category:'Side-by-Side', condition:'New',
+    name:'Yamaha YXZ1000R SS',
+    sub:'Side-by-Side · 998cc 3-Cyl',
+    engine:'998cc Inline-3', hp:'112 HP', topSpeed:'70 mph',
+    price:21799, priceDisplay:'$21,799', orig:null
+  },
+  {
+    img:'https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Sea-Doo_RXP-X_260_2012.jpg/640px-Sea-Doo_RXP-X_260_2012.jpg',
+    badge:'', badgeText:'',
+    make:'Yamaha', model:'FX SVHO', year:2023,
+    category:'Jet Ski', condition:'Pre-Owned',
+    name:'Yamaha FX SVHO',
+    sub:'Jet Ski · 1812cc Supercharged',
+    engine:'1812cc Supercharged', hp:'260 HP', topSpeed:'67 mph',
+    price:16299, priceDisplay:'$16,299', orig:null
+  },
+  {
+    img:'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/CanAm_ATV.jpg/640px-CanAm_ATV.jpg',
+    badge:'badge-new', badgeText:'New 2025',
+    make:'Polaris', model:'Sportsman 850', year:2025,
+    category:'ATV', condition:'New',
+    name:'Polaris Sportsman 850',
+    sub:'ATV · 850cc Single',
+    engine:'850cc Single', hp:'60 HP', topSpeed:'55 mph',
+    price:11499, priceDisplay:'$11,499', orig:null
+  },
+  {
+    img:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Kawasaki_Ninja_ZX-10R_2006.jpg/640px-Kawasaki_Ninja_ZX-10R_2006.jpg',
+    badge:'', badgeText:'',
+    make:'Ducati', model:'Panigale V4', year:2023,
+    category:'Motorcycle', condition:'Pre-Owned',
+    name:'Ducati Panigale V4',
+    sub:'Superbike · 1103cc V4',
+    engine:'1103cc V4', hp:'214 HP', topSpeed:'199 mph',
+    price:23595, priceDisplay:'$23,595', orig:null
+  },
+  {
+    img:'https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/KTM_350_EXC-F.jpg/640px-KTM_350_EXC-F.jpg',
+    badge:'badge-sale', badgeText:'Save $1,200',
+    make:'Husqvarna', model:'FC 450', year:2024,
+    category:'Dirt Bike', condition:'Pre-Owned',
+    name:'Husqvarna FC 450',
+    sub:'Dirt Bike · 450cc MX',
+    engine:'449cc Single', hp:'62 HP', topSpeed:'78 mph',
+    price:9999, priceDisplay:'$9,999', orig:'$11,199'
+  },
+  {
+    img:'https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/2019_Can-Am_Maverick_X3_X_rs_Turbo_RR.jpg/640px-2019_Can-Am_Maverick_X3_X_rs_Turbo_RR.jpg',
+    badge:'badge-new', badgeText:'New 2025',
+    make:'Can-Am', model:'Defender MAX HD9', year:2025,
+    category:'Side-by-Side', condition:'New',
+    name:'Can-Am Defender MAX HD9',
+    sub:'Side-by-Side · 4-Seat Utility',
+    engine:'854cc V-Twin', hp:'72 HP', topSpeed:'60 mph',
+    price:19299, priceDisplay:'$19,299', orig:null
+  }
+];
+ 
+// ── STATE ──
+let priceMin = 0, priceMax = 40000;
+let searchQuery = '';
+ 
+function fmt(n){ return n>=40000?'$40,000+':'$'+n.toLocaleString(); }
+ 
+function updatePriceMin(v){
+  priceMin = parseInt(v);
+  if(priceMin > priceMax-500) { priceMin = priceMax-500; document.getElementById('price-min-slider').value = priceMin; }
+  document.getElementById('price-min-label').textContent = fmt(priceMin);
+  applyFilters();
+}
+function updatePriceMax(v){
+  priceMax = parseInt(v);
+  if(priceMax < priceMin+500) { priceMax = priceMin+500; document.getElementById('price-max-slider').value = priceMax; }
+  document.getElementById('price-max-label').textContent = fmt(priceMax);
+  applyFilters();
+}
+function resetPrice(){
+  priceMin=0; priceMax=40000;
+  document.getElementById('price-min-slider').value=0;
+  document.getElementById('price-max-slider').value=40000;
+  document.getElementById('price-min-label').textContent='$0';
+  document.getElementById('price-max-label').textContent='$40,000+';
+  applyFilters();
+}
+function clearYears(){
+  document.getElementById('year-min').value='';
+  document.getElementById('year-max').value='';
+  applyFilters();
+}
+function clearGroup(group){
+  const map = {make:'[data-group="make"]',category:'[data-group="category"]'};
+  const selectors = {
+    make: '.sidebar input[value="Kawasaki"],.sidebar input[value="Can-Am"],.sidebar input[value="Sea-Doo"],.sidebar input[value="Honda"],.sidebar input[value="Yamaha"],.sidebar input[value="Polaris"],.sidebar input[value="KTM"],.sidebar input[value="Husqvarna"],.sidebar input[value="Ducati"]',
+    category: '.sidebar input[value="Motorcycle"],.sidebar input[value="Side-by-Side"],.sidebar input[value="Jet Ski"],.sidebar input[value="ATV"],.sidebar input[value="Dirt Bike"]'
+  };
+  document.querySelectorAll(selectors[group]).forEach(cb => cb.checked=false);
+  applyFilters();
+}
+function handleSearch(val){
+  searchQuery = val.trim().toLowerCase();
+  document.getElementById('search-clear').style.display = val ? 'block' : 'none';
+  applyFilters();
+}
+function clearSearch(){
+  document.getElementById('search-input').value='';
+  searchQuery='';
+  document.getElementById('search-clear').style.display='none';
+  applyFilters();
+}
+ 
+function getChecked(values){
+  return values.filter(v => {
+    const cb = document.querySelector(`.sidebar input[value="${v}"]`);
+    return cb && cb.checked;
+  });
+}
+ 
+function applyFilters(){
+  const makes = getChecked(['Kawasaki','Can-Am','Sea-Doo','Honda','Yamaha','Polaris','KTM','Husqvarna','Ducati']);
+  const cats  = getChecked(['Motorcycle','Side-by-Side','Jet Ski','ATV','Dirt Bike']);
+  const conds = getChecked(['New','Pre-Owned']);
+  const yMin  = parseInt(document.getElementById('year-min').value)||0;
+  const yMax  = parseInt(document.getElementById('year-max').value)||9999;
+  const sort  = document.getElementById('sort-select').value;
+ 
+  let results = allProducts.filter(p => {
+    if(makes.length && !makes.includes(p.make)) return false;
+    if(cats.length  && !cats.includes(p.category)) return false;
+    if(conds.length && !conds.includes(p.condition)) return false;
+    if(p.price < priceMin || (priceMax < 40000 && p.price > priceMax)) return false;
+    if(yMin && p.year < yMin) return false;
+    if(yMax < 9999 && p.year > yMax) return false;
+    if(searchQuery){
+      const haystack = [p.make,p.model,String(p.year),p.category,p.name,p.sub,p.engine].join(' ').toLowerCase();
+      if(!haystack.includes(searchQuery)) return false;
+    }
+    return true;
+  });
+ 
+  if(sort==='price-asc')  results.sort((a,b)=>a.price-b.price);
+  if(sort==='price-desc') results.sort((a,b)=>b.price-a.price);
+  if(sort==='year-desc')  results.sort((a,b)=>b.year-a.year);
+  if(sort==='year-asc')   results.sort((a,b)=>a.year-b.year);
+ 
+  renderGrid(results);
+  renderChips({makes,cats,conds,yMin,yMax});
+  document.getElementById('count-display').textContent = results.length;
+}
+ 
+function renderGrid(results){
+  const grid = document.getElementById('products-grid');
+  if(!results.length){
+    grid.innerHTML = `<div class="no-results" style="grid-column:1/-1"><h3>No Results Found</h3><p>Try adjusting your filters or search term.</p><button class="btn btn-outline" style="margin-top:1.5rem" onclick="resetAll()">Clear All Filters</button></div>`;
+    return;
+  }
+  grid.innerHTML = results.map(p => `
+    <div class="product-card" onclick="showPage('detail')">
+      <div class="product-img"><img src="${p.img}" alt="${p.name}" loading="lazy"></div>
+      <div class="product-body">
+        ${p.badgeText ? `<span class="product-badge ${p.badge}">${p.badgeText}</span>` : `<span style="display:block;height:1.6rem"></span>`}
+        <div class="product-name">${p.name}</div>
+        <div class="product-sub">${p.sub}</div>
+        <div class="product-specs-row">
+          <span class="spec-pill">${p.year}</span>
+          <span class="spec-pill">${p.hp}</span>
+          <span class="spec-pill">${p.condition}</span>
+        </div>
+        <div class="product-footer">
+          <div>
+            <span class="product-price">${p.priceDisplay}</span>
+            ${p.orig ? `<span class="product-price-orig">${p.orig}</span>` : ''}
+          </div>
+          <button class="view-btn" onclick="event.stopPropagation();showPage('detail')">View →</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+ 
+function renderChips({makes,cats,conds,yMin,yMax}){
+  const chips = [];
+  makes.forEach(m => chips.push({label:'Make: '+m, clear:()=>{ document.querySelector(`.sidebar input[value="${m}"]`).checked=false; applyFilters(); }}));
+  cats.forEach(c  => chips.push({label:'Cat: '+c,  clear:()=>{ document.querySelector(`.sidebar input[value="${c}"]`).checked=false; applyFilters(); }}));
+  conds.forEach(c => chips.push({label:c,           clear:()=>{ document.querySelector(`.sidebar input[value="${c}"]`).checked=false; applyFilters(); }}));
+  if(yMin) chips.push({label:'From '+yMin, clear:()=>{ document.getElementById('year-min').value=''; applyFilters(); }});
+  if(yMax<9999) chips.push({label:'To '+yMax, clear:()=>{ document.getElementById('year-max').value=''; applyFilters(); }});
+  if(priceMin>0) chips.push({label:'Min '+fmt(priceMin), clear:resetPrice});
+  if(priceMax<40000) chips.push({label:'Max '+fmt(priceMax), clear:resetPrice});
+  if(searchQuery) chips.push({label:'Search: "'+searchQuery+'"', clear:clearSearch});
+ 
+  const container = document.getElementById('active-chips');
+  container.innerHTML = chips.map((c,i)=>
+    `<div class="chip">${c.label} <span class="chip-x" onclick="chipClear(${i})">✕</span></div>`
+  ).join('');
+  window._chipClears = chips.map(c=>c.clear);
+}
+function chipClear(i){ window._chipClears[i](); }
+ 
+function resetAll(){
+  document.querySelectorAll('.sidebar input[type=checkbox]').forEach(cb => {
+    cb.checked = (cb.value==='New');
+  });
+  resetPrice();
+  clearYears();
+  clearSearch();
+  document.getElementById('sort-select').value='featured';
+  applyFilters();
+}
+ 
+// ── PAGE SWITCHING ──
+function showPage(name){
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  window.scrollTo(0,0);
+  if(name==='products') applyFilters();
+}
+ 
+function setImg(src,el){
+  document.getElementById('main-img').src=src;
+  document.querySelectorAll('.thumb').forEach(t=>t.classList.remove('active-thumb'));
+  el.classList.add('active-thumb');
+}
+ 
+document.querySelectorAll('.swatch').forEach(s=>{
+  s.addEventListener('click',function(){
+    document.querySelectorAll('.swatch').forEach(sw=>sw.classList.remove('active-swatch'));
+    this.classList.add('active-swatch');
+    document.getElementById('color-name').textContent=this.dataset.name;
+  });
+});
+ 
+// Init
+applyFilters();
+</script>
+</body>
+</html>
